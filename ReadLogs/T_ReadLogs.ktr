@@ -146,8 +146,8 @@
   <hop> <from>Is Slave Not Null&#x3f;</from><to>Ignore</to><enabled>Y</enabled> </hop>
   </order>
   <step>
-    <name>Job Stats&#x3d;Finished</name>
-    <type>Constant</type>
+    <name>Build url</name>
+    <type>ScriptValueMod</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -156,57 +156,24 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <fields>
-      <field>
-        <name>JobStatsConstant</name>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#x2f;&#x2f;Script here&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;var removeTransURL&#x3d;&#x22;http&#x3a;&#x2f;&#x2f;&#x22;&#x2b;slave_name&#x2b;&#x22;&#x3a;&#x22;&#x2b;slave_port&#x2b;&#x22;&#x2f;kettle&#x2f;removeTrans&#x3f;name&#x3d;&#x22;&#x2b;transname&#x3b;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
+      </jsScript>      <jsScript>        <jsScript_type>-1</jsScript_type>
+        <jsScript_name>substr_Sample</jsScript_name>
+        <jsScript_script>&#x2f;&#x2f; Perform the substring function&#xa;&#x2f;&#x2f; &#xa;&#x2f;&#x2f; Usage&#x3a;&#xa;&#x2f;&#x2f; substr&#x28;var, from&#x29;&#x3b;&#xa;&#x2f;&#x2f; substr&#x28;var, from, to&#x29;&#x3b;&#xa;&#x2f;&#x2f;&#xa;&#x2f;&#x2f; 2007-01-25&#xa;&#x2f;&#x2f;&#xa;var str1&#x3d; &#x22;Hello Pentaho&#x21;&#x22;&#x3b;&#xa;var str2&#x3d; substr&#x28;str1, 6&#x29;&#x3b;&#xa;var str3&#x3d; substr&#x28;str1, 6, 7&#x29;&#x3b;&#xa;Alert&#x28;&#x22;Input &#x3a; &#x22; &#x2b; str1&#x29;&#x3b;&#xa;Alert&#x28;&#x22;From position 6&#x3a; &#x22; &#x2b; str2&#x29;&#x3b;&#xa;Alert&#x28;&#x22;From position 6 for 7 long &#x3a; &#x22; &#x2b; str3&#x29;&#x3b;&#xa;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>removeTransURL</name>
+        <rename>removeTransURL</rename>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>FINISHED</nullif>
         <length>-1</length>
         <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-     <cluster_schema/>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>656</xloc>
+      <xloc>400</xloc>
       <yloc>128</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Job Stats &#x3d; Error</name>
-    <type>Constant</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <fields>
-      <field>
-        <name>JobStatsConstant</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>ERROR - EXECUTION</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>544</xloc>
-      <yloc>320</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -255,6 +222,66 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>192</xloc>
       <yloc>320</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Find Slave Details</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>PostgreSQL</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>public</schema>
+      <table>slave_server_list</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>slave_id</name>
+        <field>slave_id</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>slave_name</name>
+        <rename>slave_name</rename>
+        <default/>
+        <type>String</type>
+      </value>
+      <value>
+        <name>slave_port</name>
+        <rename>slave_port</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+      <value>
+        <name>slave_username</name>
+        <rename>slave_username</rename>
+        <default/>
+        <type>String</type>
+      </value>
+      <value>
+        <name>slave_password</name>
+        <rename>slave_password</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>304</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -327,26 +354,49 @@
     </step>
 
   <step>
-    <name>System date</name>
-    <type>SystemInfo</type>
+    <name>Ignore</name>
+    <type>Dummy</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <fields>
-      <field>
-        <name>last_updated</name>
-        <type>system date &#x28;variable&#x29;</type>
-        </field>
-      </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>640</xloc>
-      <yloc>320</yloc>
+      <xloc>416</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Is Slave Not Null&#x3f;</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to>Build url</send_true_to>
+<send_false_to>Ignore</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>slave_id</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>304</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -376,6 +426,72 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>544</xloc>
       <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Job Stats &#x3d; Error</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>JobStatsConstant</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>ERROR - EXECUTION</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>544</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Job Stats&#x3d;Finished</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>JobStatsConstant</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>FINISHED</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>656</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -493,6 +609,80 @@
     </step>
 
   <step>
+    <name>Remove Trans From Carte</name>
+    <type>HTTP</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <url/>
+    <urlInField>Y</urlInField>
+    <urlField>removeTransURL</urlField>
+    <encoding>UTF-8</encoding>
+    <httpLogin>cluster</httpLogin>
+    <httpPassword>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</httpPassword>
+    <proxyHost/>
+    <proxyPort/>
+    <socketTimeout>10000</socketTimeout>
+    <connectionTimeout>10000</connectionTimeout>
+    <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
+    <lookup>
+    </lookup>
+    <result>
+      <name>result</name>
+      <code>status</code>
+      <response_time>responseTime</response_time>
+    </result>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>848</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Remove Trans From Carte &#x28;Error&#x29;</name>
+    <type>HTTP</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <url/>
+    <urlInField>Y</urlInField>
+    <urlField>removeTransURL</urlField>
+    <encoding>UTF-8</encoding>
+    <httpLogin>cluster</httpLogin>
+    <httpPassword>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</httpPassword>
+    <proxyHost/>
+    <proxyPort/>
+    <socketTimeout>10000</socketTimeout>
+    <connectionTimeout>10000</connectionTimeout>
+    <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
+    <lookup>
+    </lookup>
+    <result>
+      <name>result</name>
+      <code>status</code>
+      <response_time>responseTime</response_time>
+    </result>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>736</xloc>
+      <yloc>384</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
     <name>Select</name>
     <type>SelectValues</type>
     <description/>
@@ -552,6 +742,31 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>464</xloc>
       <yloc>128</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>System date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>last_updated</name>
+        <type>system date &#x28;variable&#x29;</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>640</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -638,203 +853,6 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>736</xloc>
       <yloc>256</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>is TransStatus&#x3d;END&#x3f;</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-<send_true_to>Job Stats&#x3d;Finished</send_true_to>
-<send_false_to>Is TransStatus&#x3d;STOPPED&#x3f;</send_false_to>
-    <compare>
-<condition>
- <negated>N</negated>
- <conditions>
-  <condition>
-   <negated>N</negated>
-   <leftvalue>status</leftvalue>
-   <function>&#x3d;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>String</type><text>end</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
-  <condition>
-   <negated>N</negated>
-   <operator>AND</operator>
-   <leftvalue>client</leftvalue>
-   <function>&#x3d;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>String</type><text>CARTE</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
-  <condition>
-   <negated>N</negated>
-   <operator>AND</operator>
-   <leftvalue>job_status</leftvalue>
-   <function>&#x3c;&#x3e;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>String</type><text>FINISHED</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
-  </conditions>
- </condition>
-    </compare>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>544</xloc>
-      <yloc>128</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Remove Trans From Carte</name>
-    <type>HTTP</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <url/>
-    <urlInField>Y</urlInField>
-    <urlField>removeTransURL</urlField>
-    <encoding>UTF-8</encoding>
-    <httpLogin>cluster</httpLogin>
-    <httpPassword>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</httpPassword>
-    <proxyHost/>
-    <proxyPort/>
-    <socketTimeout>10000</socketTimeout>
-    <connectionTimeout>10000</connectionTimeout>
-    <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
-    <lookup>
-    </lookup>
-    <result>
-      <name>result</name>
-      <code>status</code>
-      <response_time>responseTime</response_time>
-    </result>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>848</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Find Slave Details</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>PostgreSQL</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema>public</schema>
-      <table>slave_server_list</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>slave_id</name>
-        <field>slave_id</field>
-        <condition>&#x3d;</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>slave_name</name>
-        <rename>slave_name</rename>
-        <default/>
-        <type>String</type>
-      </value>
-      <value>
-        <name>slave_port</name>
-        <rename>slave_port</rename>
-        <default/>
-        <type>Integer</type>
-      </value>
-      <value>
-        <name>slave_username</name>
-        <rename>slave_username</rename>
-        <default/>
-        <type>String</type>
-      </value>
-      <value>
-        <name>slave_password</name>
-        <rename>slave_password</rename>
-        <default/>
-        <type>String</type>
-      </value>
-    </lookup>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>304</xloc>
-      <yloc>224</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Build url</name>
-    <type>ScriptValueMod</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <compatible>N</compatible>
-    <optimizationLevel>9</optimizationLevel>
-    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
-        <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>&#x2f;&#x2f;Script here&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;var removeTransURL&#x3d;&#x22;http&#x3a;&#x2f;&#x2f;&#x22;&#x2b;slave_name&#x2b;&#x22;&#x3a;&#x22;&#x2b;slave_port&#x2b;&#x22;&#x2f;kettle&#x2f;removeTrans&#x3f;name&#x3d;&#x22;&#x2b;transname&#x3b;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
-      </jsScript>      <jsScript>        <jsScript_type>-1</jsScript_type>
-        <jsScript_name>substr_Sample</jsScript_name>
-        <jsScript_script>&#x2f;&#x2f; Perform the substring function&#xa;&#x2f;&#x2f; &#xa;&#x2f;&#x2f; Usage&#x3a;&#xa;&#x2f;&#x2f; substr&#x28;var, from&#x29;&#x3b;&#xa;&#x2f;&#x2f; substr&#x28;var, from, to&#x29;&#x3b;&#xa;&#x2f;&#x2f;&#xa;&#x2f;&#x2f; 2007-01-25&#xa;&#x2f;&#x2f;&#xa;var str1&#x3d; &#x22;Hello Pentaho&#x21;&#x22;&#x3b;&#xa;var str2&#x3d; substr&#x28;str1, 6&#x29;&#x3b;&#xa;var str3&#x3d; substr&#x28;str1, 6, 7&#x29;&#x3b;&#xa;Alert&#x28;&#x22;Input &#x3a; &#x22; &#x2b; str1&#x29;&#x3b;&#xa;Alert&#x28;&#x22;From position 6&#x3a; &#x22; &#x2b; str2&#x29;&#x3b;&#xa;Alert&#x28;&#x22;From position 6 for 7 long &#x3a; &#x22; &#x2b; str3&#x29;&#x3b;&#xa;</jsScript_script>
-      </jsScript>    </jsScripts>    <fields>      <field>        <name>removeTransURL</name>
-        <rename>removeTransURL</rename>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <replace>N</replace>
-      </field>    </fields>     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>400</xloc>
-      <yloc>128</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Ignore</name>
-    <type>Dummy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>416</xloc>
-      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -938,44 +956,7 @@
     </step>
 
   <step>
-    <name>Remove Trans From Carte &#x28;Error&#x29;</name>
-    <type>HTTP</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <url/>
-    <urlInField>Y</urlInField>
-    <urlField>removeTransURL</urlField>
-    <encoding>UTF-8</encoding>
-    <httpLogin>cluster</httpLogin>
-    <httpPassword>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</httpPassword>
-    <proxyHost/>
-    <proxyPort/>
-    <socketTimeout>10000</socketTimeout>
-    <connectionTimeout>10000</connectionTimeout>
-    <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
-    <lookup>
-    </lookup>
-    <result>
-      <name>result</name>
-      <code>status</code>
-      <response_time>responseTime</response_time>
-    </result>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>736</xloc>
-      <yloc>384</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Is Slave Not Null&#x3f;</name>
+    <name>is TransStatus&#x3d;END&#x3f;</name>
     <type>FilterRows</type>
     <description/>
     <distribute>Y</distribute>
@@ -985,19 +966,38 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-<send_true_to>Build url</send_true_to>
-<send_false_to>Ignore</send_false_to>
+<send_true_to>Job Stats&#x3d;Finished</send_true_to>
+<send_false_to>Is TransStatus&#x3d;STOPPED&#x3f;</send_false_to>
     <compare>
 <condition>
  <negated>N</negated>
- <leftvalue>slave_id</leftvalue>
- <function>IS NOT NULL</function>
- <rightvalue/>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <leftvalue>status</leftvalue>
+   <function>&#x3d;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>end</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND</operator>
+   <leftvalue>client</leftvalue>
+   <function>&#x3d;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>CARTE</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND</operator>
+   <leftvalue>job_status</leftvalue>
+   <function>&#x3c;&#x3e;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>FINISHED</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  </conditions>
  </condition>
     </compare>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>304</xloc>
+      <xloc>544</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
       </GUI>

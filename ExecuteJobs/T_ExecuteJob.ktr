@@ -165,18 +165,20 @@
   <hop> <from>Build url</from><to>Execute Job on Slave</to><enabled>Y</enabled> </hop>
   <hop> <from>Get Variables</from><to>Build url</to><enabled>Y</enabled> </hop>
   <hop> <from>Job Status&#x3d;STARTED</from><to>Get System Info</to><enabled>Y</enabled> </hop>
-  <hop> <from>Execute Job on Slave</from><to>Execution Success&#x3f;</to><enabled>Y</enabled> </hop>
-  <hop> <from>Execution Success&#x3f;</from><to>Job Status&#x3d;STARTED</to><enabled>Y</enabled> </hop>
-  <hop> <from>Execute Job on Slave</from><to>Job Status&#x3d;ERROR</to><enabled>Y</enabled> </hop>
-  <hop> <from>Execution Success&#x3f;</from><to>Job Status&#x3d;ERROR</to><enabled>Y</enabled> </hop>
-  <hop> <from>Job Status&#x3d;ERROR</from><to>Last Error Date&#x2f;Time</to><enabled>Y</enabled> </hop>
+  <hop> <from>Execute Job on Slave</from><to>Execution Success&#x3f;</to><enabled>N</enabled> </hop>
+  <hop> <from>Execution Success&#x3f;</from><to>Job Status&#x3d;STARTED</to><enabled>N</enabled> </hop>
+  <hop> <from>Execute Job on Slave</from><to>Job Status&#x3d;ERROR</to><enabled>N</enabled> </hop>
+  <hop> <from>Execution Success&#x3f;</from><to>Job Status&#x3d;ERROR</to><enabled>N</enabled> </hop>
+  <hop> <from>Job Status&#x3d;ERROR</from><to>Last Error Date&#x2f;Time</to><enabled>N</enabled> </hop>
   <hop> <from>Type Cast</from><to>Remove From Queue</to><enabled>N</enabled> </hop>
-  <hop> <from>Last Error Date&#x2f;Time</from><to>Type Cast</to><enabled>Y</enabled> </hop>
-  <hop> <from>Type Cast</from><to>Update - Job &#x28;Error&#x29;</to><enabled>Y</enabled> </hop>
+  <hop> <from>Last Error Date&#x2f;Time</from><to>Type Cast</to><enabled>N</enabled> </hop>
+  <hop> <from>Type Cast</from><to>Update - Job &#x28;Error&#x29;</to><enabled>N</enabled> </hop>
   <hop> <from>Get System Info</from><to>Type Casting</to><enabled>Y</enabled> </hop>
   <hop> <from>Type Casting</from><to>Update - Job</to><enabled>Y</enabled> </hop>
   <hop> <from>Type Casting</from><to>Update - Queue</to><enabled>Y</enabled> </hop>
-  <hop> <from>Type Cast</from><to>Remove Trans From Carte</to><enabled>Y</enabled> </hop>
+  <hop> <from>Type Cast</from><to>Remove Trans From Carte</to><enabled>N</enabled> </hop>
+  <hop> <from>Execute Job on Slave</from><to>Job Status&#x3d;STARTED</to><enabled>N</enabled> </hop>
+  <hop> <from>Execute Job on Slave</from><to>Job Status&#x3d;STARTED</to><enabled>Y</enabled> </hop>
   </order>
   <step>
     <name>Build url</name>
@@ -239,7 +241,7 @@
     <name>Execute Job on Slave</name>
     <type>HTTP</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -296,7 +298,7 @@
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>528</xloc>
-      <yloc>144</yloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -305,7 +307,7 @@
     <name>Get System Info</name>
     <type>SystemInfo</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -503,7 +505,7 @@
     </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>656</xloc>
+      <xloc>640</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
       </GUI>
@@ -703,7 +705,7 @@
       </meta>    </fields>     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>784</xloc>
-      <yloc>224</yloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -746,7 +748,7 @@
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>896</xloc>
-      <yloc>176</yloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -838,7 +840,7 @@
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>896</xloc>
-      <yloc>256</yloc>
+      <yloc>288</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -846,7 +848,7 @@
   <step_error_handling>
       <error>
         <source_step>Execute Job on Slave</source_step>
-        <target_step>Job Status&#x3d;ERROR</target_step>
+        <target_step>Job Status&#x3d;STARTED</target_step>
         <is_enabled>Y</is_enabled>
         <nr_valuename/>
         <descriptions_valuename/>

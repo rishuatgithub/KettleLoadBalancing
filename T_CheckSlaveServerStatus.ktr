@@ -133,34 +133,68 @@
   <hop> <from>Last Check Time &#x28;Not Available&#x29;</from><to>Update &#x28;Not Available&#x29;</to><enabled>Y</enabled> </hop>
   <hop> <from>Ping Slave URL</from><to>Is Slave Alive&#x3f;</to><enabled>Y</enabled> </hop>
   <hop> <from>Is Slave Alive&#x3f;</from><to>Set Availability&#x3d;N</to><enabled>Y</enabled> </hop>
-  <hop> <from>Is Jobs&#x2f;Trans Running&#x2f;Waiting&#x3f;</from><to>Count Total Jobs Running</to><enabled>Y</enabled> </hop>
   <hop> <from>Pass</from><to>Read Transformation Status</to><enabled>Y</enabled> </hop>
   <hop> <from>Pass</from><to>Read Job Status</to><enabled>N</enabled> </hop>
   <hop> <from>Is Slave Alive&#x3f;</from><to>Pass</to><enabled>Y</enabled> </hop>
   <hop> <from>Pass</from><to>Select Slave Details</to><enabled>Y</enabled> </hop>
   <hop> <from>Select Slave Details</from><to>Join</to><enabled>Y</enabled> </hop>
-  <hop> <from>Count Total Jobs Running</from><to>Join</to><enabled>Y</enabled> </hop>
-  <hop> <from>Join</from><to>Is Slave &#x3c; Threshold&#x3f;</to><enabled>Y</enabled> </hop>
   <hop> <from>Is Slave &#x3c; Threshold&#x3f;</from><to>Set Availability&#x3d;Y</to><enabled>Y</enabled> </hop>
   <hop> <from>Last Check Time &#x28;Avail&#x29;</from><to>Update &#x28;Available&#x29;</to><enabled>Y</enabled> </hop>
   <hop> <from>Is Slave &#x3c; Threshold&#x3f;</from><to>Set Availability&#x3d;N &#x28;Threshold&#x29;</to><enabled>Y</enabled> </hop>
   <hop> <from>Last Check Time &#x28;Not Available&#x29; - Threshold</from><to>Update &#x28;Not Available&#x29; - Threshold</to><enabled>Y</enabled> </hop>
   <hop> <from>Set Availability&#x3d;N &#x28;Threshold&#x29;</from><to>Remaining Slaves- Threshold</to><enabled>Y</enabled> </hop>
   <hop> <from>Remaining Slaves- Threshold</from><to>Last Check Time &#x28;Not Available&#x29; - Threshold</to><enabled>Y</enabled> </hop>
-  <hop> <from>Set Availability&#x3d;Y</from><to>Remaining Slaves</to><enabled>Y</enabled> </hop>
-  <hop> <from>Remaining Slaves</from><to>Last Check Time &#x28;Avail&#x29;</to><enabled>Y</enabled> </hop>
-  <hop> <from>Is Jobs&#x2f;Trans Running&#x2f;Waiting&#x3f;</from><to>Do Nothing</to><enabled>Y</enabled> </hop>
-  <hop> <from>Detect Empty Slaves &#x28;ktr&#x29;</from><to>Is Jobs&#x2f;Trans Running&#x2f;Waiting&#x3f;</to><enabled>Y</enabled> </hop>
-  <hop> <from>Read Job Status</from><to>Detect Empty Slaves &#x28;kjb&#x29;</to><enabled>N</enabled> </hop>
-  <hop> <from>Detect Empty Slaves &#x28;kjb&#x29;</from><to>Is Jobs&#x2f;Trans Running&#x2f;Waiting&#x3f;</to><enabled>N</enabled> </hop>
+  <hop> <from>Filter rows</from><to>Do Nothing</to><enabled>Y</enabled> </hop>
+  <hop> <from>Read Transformation Status</from><to>Filter rows</to><enabled>Y</enabled> </hop>
   <hop> <from>Read Transformation Status</from><to>Detect Empty Slaves &#x28;ktr&#x29;</to><enabled>Y</enabled> </hop>
-  <hop> <from>Count Total Jobs Running</from><to>Text file output</to><enabled>N</enabled> </hop>
+  <hop> <from>Filter rows</from><to>Count Total Jobs Running</to><enabled>Y</enabled> </hop>
+  <hop> <from>Detect Empty Slaves &#x28;ktr&#x29;</from><to>Add constants</to><enabled>Y</enabled> </hop>
+  <hop> <from>Add constants</from><to>Select values</to><enabled>Y</enabled> </hop>
+  <hop> <from>Count Total Jobs Running</from><to>Pass 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>Select values</from><to>Pass 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>Pass 2</from><to>Join</to><enabled>Y</enabled> </hop>
+  <hop> <from>Join</from><to>Remaining Slaves</to><enabled>Y</enabled> </hop>
+  <hop> <from>Remaining Slaves</from><to>Is Slave &#x3c; Threshold&#x3f;</to><enabled>Y</enabled> </hop>
+  <hop> <from>Set Availability&#x3d;Y</from><to>Last Check Time &#x28;Avail&#x29;</to><enabled>Y</enabled> </hop>
   </order>
+  <step>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>TotalJobsRunning</name>
+        <type>Integer</type>
+        <format>&#x23;</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>0</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>640</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
   <step>
     <name>Count Total Jobs Running</name>
     <type>MemoryGroupBy</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -183,27 +217,8 @@
       </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>800</xloc>
-      <yloc>240</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Detect Empty Slaves &#x28;kjb&#x29;</name>
-    <type>DetectEmptyStream</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>688</xloc>
-      <yloc>192</yloc>
+      <xloc>816</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -221,8 +236,8 @@
            </partitioning>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>688</xloc>
-      <yloc>96</yloc>
+      <xloc>640</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -240,8 +255,49 @@
            </partitioning>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>1008</xloc>
-      <yloc>144</yloc>
+      <xloc>816</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to>Count Total Jobs Running</send_true_to>
+<send_false_to>Do Nothing</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <leftvalue>status_desc</leftvalue>
+   <function>&#x3d;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>Waiting</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>OR</operator>
+   <leftvalue>status_desc</leftvalue>
+   <function>&#x3d;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>Running</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  </conditions>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>688</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -316,54 +372,6 @@
     </step>
 
   <step>
-    <name>Is Jobs&#x2f;Trans Running&#x2f;Waiting&#x3f;</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-<send_true_to>Count Total Jobs Running</send_true_to>
-<send_false_to>Do Nothing</send_false_to>
-    <compare>
-<condition>
- <negated>N</negated>
- <conditions>
-  <condition>
-   <negated>N</negated>
-   <leftvalue>status_desc</leftvalue>
-   <function>&#x3d;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>String</type><text>Waiting</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
-  <condition>
-   <negated>N</negated>
-   <operator>OR</operator>
-   <leftvalue>status_desc</leftvalue>
-   <function>&#x3d;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>String</type><text>Running</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
-  <condition>
-   <negated>N</negated>
-   <operator>OR</operator>
-   <leftvalue>status_desc</leftvalue>
-   <function>IS NULL</function>
-   <rightvalue/>
-   </condition>
-  </conditions>
- </condition>
-    </compare>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>800</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
     <name>Is Slave &#x3c; Threshold&#x3f;</name>
     <type>FilterRows</type>
     <description/>
@@ -379,14 +387,14 @@
     <compare>
 <condition>
  <negated>N</negated>
- <leftvalue>TotalJobsRunning</leftvalue>
- <function>&#x3c;</function>
- <rightvalue>SlaveThreshold</rightvalue>
- </condition>
+ <leftvalue>SlaveRemaining</leftvalue>
+ <function>&#x3e;</function>
+ <rightvalue/>
+ <value><name>constant</name><type>Integer</type><text>0</text><length>-1</length><precision>0</precision><isnull>N</isnull><mask>&#x23;&#x3b;-&#x23;</mask></value> </condition>
     </compare>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>800</xloc>
+      <xloc>736</xloc>
       <yloc>400</yloc>
       <draw>Y</draw>
       </GUI>
@@ -425,7 +433,7 @@
     <name>Join</name>
     <type>JoinRows</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -446,7 +454,7 @@
     </compare>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>800</xloc>
+      <xloc>736</xloc>
       <yloc>320</yloc>
       <draw>Y</draw>
       </GUI>
@@ -471,7 +479,7 @@
       </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>1040</xloc>
+      <xloc>864</xloc>
       <yloc>496</yloc>
       <draw>Y</draw>
       </GUI>
@@ -542,6 +550,25 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>416</xloc>
       <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Pass 2</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>816</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -768,7 +795,7 @@
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>528</xloc>
-      <yloc>192</yloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -777,7 +804,7 @@
     <name>Read Transformation Status</name>
     <type>getXMLData</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -895,51 +922,6 @@
         <trim_type>none</trim_type>
         <repeat>N</repeat>
       </field>
-      <field>
-        <name>first_log_line_nr</name>
-        <xpath>first_log_line_nr</xpath>
-        <element_type>node</element_type>
-        <result_type>valueof</result_type>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>last_log_line_nr</name>
-        <xpath>last_log_line_nr</xpath>
-        <element_type>node</element_type>
-        <result_type>valueof</result_type>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>logging_string</name>
-        <xpath>logging_string</xpath>
-        <element_type>node</element_type>
-        <result_type>valueof</result_type>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
     </fields>
     <limit>0</limit>
     <loopxpath>&#x2f;serverstatus&#x2f;transstatuslist&#x2f;transstatus</loopxpath>
@@ -990,8 +972,8 @@
 </calculation>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>912</xloc>
-      <yloc>496</yloc>
+      <xloc>832</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -1073,6 +1055,34 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>416</xloc>
       <yloc>320</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>ConstantID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>TotalJobsRunning</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>720</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -1161,7 +1171,7 @@
     </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>576</xloc>
+      <xloc>560</xloc>
       <yloc>400</yloc>
       <draw>Y</draw>
       </GUI>
@@ -1194,7 +1204,7 @@
     </fields>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>800</xloc>
+      <xloc>736</xloc>
       <yloc>496</yloc>
       <draw>Y</draw>
       </GUI>
@@ -1245,7 +1255,7 @@
       </lookup>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>1040</xloc>
+      <xloc>864</xloc>
       <yloc>576</yloc>
       <draw>Y</draw>
       </GUI>
@@ -1353,86 +1363,22 @@
       </GUI>
     </step>
 
-  <step>
-    <name>Text file output</name>
-    <type>TextFileOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>None</compression>
-    <encoding/>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>C&#x3a;&#x5c;Users&#x5c;Rishu&#x5c;Desktop&#x5c;tesr</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>Y</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-      <field>
-        <name>ConstantID</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>TotalJobsRunning</name>
-        <type>Integer</type>
-        <format>0</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>928</xloc>
-      <yloc>240</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
   <step_error_handling>
       <error>
         <source_step>Ping Slave URL</source_step>
         <target_step>Set Availability&#x3d;N</target_step>
+        <is_enabled>Y</is_enabled>
+        <nr_valuename/>
+        <descriptions_valuename/>
+        <fields_valuename/>
+        <codes_valuename/>
+        <max_errors/>
+        <max_pct_errors/>
+        <min_pct_rows/>
+      </error>
+      <error>
+        <source_step>Read Transformation Status</source_step>
+        <target_step>Detect Empty Slaves &#x28;ktr&#x29;</target_step>
         <is_enabled>Y</is_enabled>
         <nr_valuename/>
         <descriptions_valuename/>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>T_ReadDataFromQueue</name>
+    <name>T_ReadQueueDependencyCheck</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
     </parameters>
@@ -68,34 +67,13 @@
     <clusterschemas>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2016&#x2f;06&#x2f;24 00&#x3a;22&#x3a;44.124</created_date>
+  <created_date>2016&#x2f;08&#x2f;05 17&#x3a;16&#x3a;52.834</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2016&#x2f;06&#x2f;24 00&#x3a;22&#x3a;44.124</modified_date>
+  <modified_date>2016&#x2f;08&#x2f;05 17&#x3a;16&#x3a;52.834</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>Read the data from Queue and Execute the Transformation</note>
-      <xloc>304</xloc>
-      <yloc>32</yloc>
-      <width>320</width>
-      <heigth>26</heigth>
-      <fontname>Segoe UI</fontname>
-      <fontsize>9</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>PostgreSQL</name>
@@ -122,18 +100,11 @@
     </attributes>
   </connection>
   <order>
-  <hop> <from>Files in Queue</from><to>Lookup - Find Start ID</to><enabled>Y</enabled> </hop>
-  <hop> <from>Read Job Order Metadata</from><to>Lookup - Find Start ID</to><enabled>Y</enabled> </hop>
-  <hop> <from>Select values</from><to>Sort rows</to><enabled>Y</enabled> </hop>
-  <hop> <from>Sort rows</from><to>Copy rows to result</to><enabled>Y</enabled> </hop>
-  <hop> <from>Memory Group by</from><to>Select values</to><enabled>Y</enabled> </hop>
-  <hop> <from>Lookup - Find Start ID</from><to>Filter rows</to><enabled>Y</enabled> </hop>
-  <hop> <from>Filter rows</from><to>Memory Group by</to><enabled>Y</enabled> </hop>
-  <hop> <from>Filter rows</from><to>Dummy &#x28;do nothing&#x29;</to><enabled>Y</enabled> </hop>
+  <hop> <from>Table input</from><to>Set Variables</to><enabled>Y</enabled> </hop>
   </order>
   <step>
-    <name>Copy rows to result</name>
-    <type>RowsToResult</type>
+    <name>Set Variables</name>
+    <type>SetVariable</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -142,264 +113,26 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>784</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Files in Queue</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>PostgreSQL</connection>
-    <sql>SELECT&#xd;&#xa;  job_order_id&#xd;&#xa;, slave_id&#xd;&#xa;, last_modified&#xd;&#xa;, queue_status&#xd;&#xa;FROM queue_jobslave_list&#xd;&#xa;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>48</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Lookup - Find Start ID</name>
-    <type>StreamLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <from>Read Job Order Metadata</from>
-    <input_sorted>N</input_sorted>
-    <preserve_memory>Y</preserve_memory>
-    <sorted_list>N</sorted_list>
-    <integer_pair>N</integer_pair>
-    <lookup>
-      <key>
-        <name>job_order_id</name>
-        <field>job_order_id</field>
-      </key>
-      <value>
-        <name>job_name</name>
-        <rename>job_name</rename>
-        <default/>
-        <type>String</type>
-      </value>
-      <value>
-        <name>job_path</name>
-        <rename>job_path</rename>
-        <default/>
-        <type>String</type>
-      </value>
-      <value>
-        <name>job_startid</name>
-        <rename>job_startid</rename>
-        <default/>
-        <type>Integer</type>
-      </value>
-      <value>
-        <name>job_dependencies</name>
-        <rename>job_dependencies</rename>
-        <default/>
-        <type>String</type>
-      </value>
-    </lookup>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>160</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Memory Group by</name>
-    <type>MemoryGroupBy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-      <give_back_row>N</give_back_row>
-      <group>
-        <field>
-          <name>job_startid</name>
-        </field>
-      </group>
-      <fields>
-        <field>
-          <aggregate>job_order_id</aggregate>
-          <subject>job_order_id</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>slave_id</aggregate>
-          <subject>slave_id</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>job_name</aggregate>
-          <subject>job_name</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>job_path</aggregate>
-          <subject>job_path</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>job_startid</aggregate>
-          <subject>job_startid</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>job_dependencies</aggregate>
-          <subject>job_dependencies</subject>
-          <type>CONCAT_COMMA</type>
-          <valuefield/>
-        </field>
-      </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>384</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Read Job Order Metadata</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>PostgreSQL</connection>
-    <sql>SELECT&#xd;&#xa;  job_order_id&#xd;&#xa;, job_name&#xd;&#xa;, job_path&#xd;&#xa;, job_startid&#xd;&#xa;, job_dependencies&#xd;&#xa;FROM job_order_list&#xd;&#xa;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>160</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Select values</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <fields>      <field>        <name>job_startid</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>job_order_id</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>slave_id</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>job_name</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>job_path</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>job_dependencies</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>        <select_unspecified>N</select_unspecified>
-    </fields>     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>480</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Sort rows</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
-      <prefix>out</prefix>
-      <sort_size>1000000</sort_size>
-      <free_memory/>
-      <compress>N</compress>
-      <compress_variable/>
-      <unique_rows>N</unique_rows>
     <fields>
       <field>
-        <name>job_startid</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <presorted>N</presorted>
-      </field>
-    </fields>
+        <field_name>jd</field_name>
+        <variable_name>JD</variable_name>
+        <variable_type>ROOT_JOB</variable_type>
+        <default_value/>
+        </field>
+      </fields>
+    <use_formatting>Y</use_formatting>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>640</xloc>
+      <xloc>352</xloc>
       <yloc>192</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
 
   <step>
-    <name>Filter rows</name>
-    <type>FilterRows</type>
+    <name>Table input</name>
+    <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -408,39 +141,17 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-<send_true_to>Memory Group by</send_true_to>
-<send_false_to>Dummy &#x28;do nothing&#x29;</send_false_to>
-    <compare>
-<condition>
- <negated>N</negated>
- <leftvalue>queue_status</leftvalue>
- <function>&#x3d;</function>
- <rightvalue/>
- <value><name>constant</name><type>String</type><text>QUEUED</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value> </condition>
-    </compare>
+    <connection>PostgreSQL</connection>
+    <sql>SELECT&#xd;&#xa;distinct min&#x28;job_dependencies&#x29; as jd&#xd;&#xa;&#xd;&#xa;FROM job_order_list&#xd;&#xa;&#xd;&#xa;where job_status in &#x28;&#x27;NOTSTARTED&#x27;,&#x27;WAITING&#x27;,&#x27;WAITING - &#x28;ERROR&#x29;&#x27;&#x29;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>272</xloc>
+      <xloc>176</xloc>
       <yloc>192</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Dummy &#x28;do nothing&#x29;</name>
-    <type>Dummy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>272</xloc>
-      <yloc>288</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
