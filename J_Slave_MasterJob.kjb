@@ -52,7 +52,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>32</xloc>
+      <xloc>16</xloc>
       <yloc>160</yloc>
       </entry>
     <entry>
@@ -267,17 +267,20 @@
       <xloc>464</xloc>
       <yloc>288</yloc>
       </entry>
+    <entry>
+      <name>Wait for</name>
+      <description/>
+      <type>DELAY</type>
+      <maximumTimeout>17</maximumTimeout>
+      <scaletime>0</scaletime>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>80</xloc>
+      <yloc>160</yloc>
+      </entry>
   </entries>
   <hops>
-    <hop>
-      <from>START</from>
-      <to>Read Slave Servers</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
     <hop>
       <from>Read Slave Servers</from>
       <to>Check Slave</to>
@@ -350,6 +353,33 @@
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
+    <hop>
+      <from>Queue Job</from>
+      <to>Clean Slave Again</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>Wait for</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Wait for</from>
+      <to>Read Slave Servers</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
   </hops>
   <notepads>
     <notepad>
@@ -375,7 +405,7 @@
     </notepad>
     <notepad>
       <note>1. Slave Check                                      &#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;</note>
-      <xloc>112</xloc>
+      <xloc>128</xloc>
       <yloc>112</yloc>
       <width>200</width>
       <heigth>116</heigth>
